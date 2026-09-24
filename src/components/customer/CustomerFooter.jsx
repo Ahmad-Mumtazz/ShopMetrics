@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import BrandLogo from '../BrandLogo';
 
 export default function CustomerFooter({ user, products, setActiveView }) {
   const merchantEmail = user.merchantEmail || '';
@@ -23,7 +24,7 @@ export default function CustomerFooter({ user, products, setActiveView }) {
       <div className="store-footer__inner">
         <section className="store-footer__brand">
           <a className="store-footer__lockup" href="#top" aria-label={`${storeName}, back to top`}>
-            <span className="brand-mark">SM</span>
+            <BrandLogo size={40} />
             <span><strong>{storeName}</strong><small>Browse the collection and manage your orders.</small></span>
           </a>
           <p>{products.length} products across {categoryCount} {categoryCount === 1 ? 'category' : 'categories'}.</p>

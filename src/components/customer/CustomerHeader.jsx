@@ -29,4 +29,6 @@ export default function CustomerHeader({ user, setActiveView, handleLogout, dele
           <button type="button" onClick={toggleTheme} className="hud-button bulb-button" aria-label="Toggle theme" title="Toggle theme">{theme === 'dark' ? '☀' : '☾'}</button>
         </nav>
       </div>
-   
+    </header>
+  );
+}

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useStore } from '../context/StoreContext';
+import BrandLogo from './BrandLogo';
 
 export default function AuthPage() {
   const { handleLogin, handleRegister, theme, toggleTheme } = useStore();
@@ -31,7 +32,7 @@ export default function AuthPage() {
       <div className="auth-panel rounded-2xl max-w-md w-full p-8 space-y-6">
       <button type="button" onClick={toggleTheme} className="theme-toggle theme-toggle--auth bulb-button" aria-label="Toggle theme" title="Toggle theme">{theme === 'dark' ? '☀' : '☾'}</button>
         <div className="text-center space-y-2">
-          <div className="text-3xl">🏪</div>
+          <BrandLogo size={56} />
           <h2 className="text-2xl font-bold text-white tracking-tight">ShopMetrics</h2>
           <p className="text-xs text-slate-400">
             {isLoginView ? 'Sign in to your workspace' : 'Create your ShopMetrics account'}
