@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useStore } from '../context/StoreContext';
-import { catalogCategories } from '../data/catalog';
+import { catalogCategories, categoryImages } from '../data/catalog';
 import Pagination from './Pagination';
+import { downloadCsv } from '../utils/csv';
 
 export default function ProductInventory() {
 
@@ -24,7 +25,8 @@ export default function ProductInventory() {
     return products.filter((product) => {
       return (
         (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.category.toLowerCase().includes(searchTerm.toLowerCase())) &&
+          product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.id.toLowerCase().includes(searchTerm.toLowerCase())) &&
           (categoryFilter === 'All' || product.category === categoryFilter)
       );
     });
@@ -32,8 +34,6 @@ export default function ProductInventory() {
   const pageSize = 10;
   const pageCount = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
   const visibleProducts = filteredProducts.slice((page - 1) * pageSize, page * pageSize);
-
-  useEffect(() => setPage(1), [searchTerm, categoryFilter]);
 
   // Convert File Input to Base64 Image String Vectors
   const handleImageFile = (e) => {
@@ -80,7 +80,7 @@ export default function ProductInventory() {
     e.preventDefault();
     if (!name || !price || !stock) return;
     
-    const productPic = image || 'https://unsplash.com';
+    const productPic = image || categoryImages[category]?.[0] || '';
     
     if (editingProduct) {
       updateProduct({
@@ -108,18 +108,16 @@ export default function ProductInventory() {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Upper Action Ribbon Banner */}
-      <div className="flex justify-between items-center">
+      <div className="page-heading">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Inventory Directory</h1>
-          <p className="text-sm text-slate-500">Perform stock uploads, update catalog parameters inline, and edit product listings.</p>
+          <p className="eyebrow">Catalog</p>
+          <h1 className="text-2xl font-bold text-slate-800">Inventory</h1>
+          <p className="text-sm text-slate-500">Manage product details, pricing, and stock levels.</p>
         </div>
-        <button 
-          type="button"
-          onClick={openCreateModal}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-sm font-semibold rounded-lg shadow-sm transition-colors"
-        >
-          + Add New Product
-        </button>
+        <div className="page-heading__actions">
+          <button type="button" className="secondary-action" onClick={() => downloadCsv('shopmetrics-inventory.csv', [['Product ID', 'Name', 'Category', 'Price', 'Stock', 'Sales', 'Reviews'], ...filteredProducts.map(product => [product.id, product.name, product.category, product.price, product.stock, product.salesCount, product.reviews?.length || 0])])} disabled={!filteredProducts.length}>Export {filteredProducts.length} products</button>
+          <button type="button" onClick={openCreateModal} className="primary-action">+ Add product</button>
+        </div>
       </div>
 
       {/* Keyword Search Input Bar */}
@@ -128,11 +126,11 @@ export default function ProductInventory() {
           type="text" 
           placeholder="Filter catalog by product title or product category..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
           className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all"
         />
         <div className="inventory-category-toggle">
-          {['All', ...catalogCategories].map(option => <button type="button" key={option} onClick={() => setCategoryFilter(option)} className={categoryFilter === option ? 'is-active' : ''}>{option}</button>)}
+          {['All', ...catalogCategories].map(option => <button type="button" key={option} onClick={() => { setCategoryFilter(option); setPage(1); }} className={categoryFilter === option ? 'is-active' : ''}>{option}</button>)}
         </div>
       </div>
 

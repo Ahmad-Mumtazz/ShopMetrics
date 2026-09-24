@@ -163,12 +163,10 @@ export function StoreProvider({ children }) {
 
   // 3. Analytics Computations Engine
   const financialMetrics = useMemo(() => {
-    const totalRevenue = orders
-      .filter(order => order.status !== 'Cancelled')
-      .reduce((sum, order) => sum + order.totalAmount, 0);
-
-    const totalOrdersCount = orders.length;
-    const averageOrderValue = totalOrdersCount > 0 ? (totalRevenue / totalOrdersCount).toFixed(2) : 0;
+    const activeOrders = orders.filter(order => order.status !== 'Cancelled');
+    const totalRevenue = activeOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+    const totalOrdersCount = activeOrders.length;
+    const averageOrderValue = totalOrdersCount > 0 ? (totalRevenue / totalOrdersCount).toFixed(2) : '0.00';
     const lowStockCount = products.filter(p => p.stock < 15).length;
 
     const monthlyDataMap = orders.reduce((acc, order) => {

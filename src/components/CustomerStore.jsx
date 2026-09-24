@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useStore } from '../context/StoreContext';
 import CartPage from './customer/CartPage';
 import CustomerHeader from './customer/CustomerHeader';
@@ -16,6 +16,7 @@ export default function CustomerStore() {
   const { products, orders, user, placeOrder, handleLogout, deleteAccount, addProductReview, updateProfile, theme, toggleTheme } = useStore();
   const [activeView, setActiveView] = useState('Shop');
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('featured');
   const [category, setCategory] = useState('All');
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -26,7 +27,12 @@ export default function CustomerStore() {
   const filteredProducts = useMemo(() => products.filter(product => {
     const matchesSearch = `${product.name} ${product.category}`.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch && (category === 'All' || product.category === category);
-  }), [products, searchTerm, category]);
+  }).sort((a, b) => {
+    if (sortBy === 'price-low') return a.price - b.price;
+    if (sortBy === 'price-high') return b.price - a.price;
+    if (sortBy === 'name') return a.name.localeCompare(b.name);
+    return 0;
+  }), [products, searchTerm, category, sortBy]);
 
   const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const customerOrders = orders.filter(order => order.customerEmail === user.email);
@@ -34,10 +40,9 @@ export default function CustomerStore() {
   const pageCount = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
   const visibleProducts = filteredProducts.slice((page - 1) * pageSize, page * pageSize);
 
-  useEffect(() => setPage(1), [searchTerm, category]);
-
   const selectCategory = (nextCategory) => {
     setCategory(nextCategory);
+    setPage(1);
     setIsCategoryMenuOpen(false);
   };
 
@@ -96,8 +101,9 @@ export default function CustomerStore() {
           <div className="customer-layout customer-layout--single">
             <section className="catalog-section">
               <div className="catalog-toolbar holo-panel">
-                <input type="search" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder="Scan products or categories" />
+                <input type="search" value={searchTerm} onChange={(event) => { setSearchTerm(event.target.value); setPage(1); }} placeholder="Search products or categories" />
                 <CategoryMenu categories={categories} selectedCategory={category} isOpen={isCategoryMenuOpen} onToggle={() => setIsCategoryMenuOpen(open => !open)} onSelect={selectCategory} />
+                <label className="catalog-sort"><span>Sort by</span><select value={sortBy} onChange={event => setSortBy(event.target.value)}><option value="featured">Featured</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="name">Name</option></select></label>
               </div>
               {filteredProducts.length === 0 ? <div className="holo-panel empty-state">No products match the current scan.</div> : <div className="product-grid">{visibleProducts.map(product => <ProductCard key={product.id} product={product} addToCart={addToCart} onOpen={setSelectedProduct} />)}</div>}
               <Pagination page={page} pageCount={pageCount} totalItems={filteredProducts.length} pageSize={pageSize} onPageChange={setPage} />

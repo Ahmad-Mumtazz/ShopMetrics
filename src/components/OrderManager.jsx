@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useStore } from '../context/StoreContext';
 import Pagination from './Pagination';
+import { downloadCsv } from '../utils/csv';
 
 export default function OrderManager() {
   const { orders, updateOrderStatus } = useStore();
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const filteredOrders = useMemo(() => orders.filter(order => {
+    const query = search.trim().toLowerCase();
+    const matchesQuery = !query || [order.id, order.customerName, order.productName, order.customerEmail].some(value => value?.toLowerCase().includes(query));
+    return matchesQuery && (statusFilter === 'All' || order.status === statusFilter);
+  }), [orders, search, statusFilter]);
   const pageSize = 10;
-  const pageCount = Math.max(1, Math.ceil(orders.length / pageSize));
-  const visibleOrders = orders.slice((page - 1) * pageSize, page * pageSize);
+  const pageCount = Math.max(1, Math.ceil(filteredOrders.length / pageSize));
+  const currentPage = Math.min(page, pageCount);
+  const visibleOrders = filteredOrders.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const getStatusStyle = (status) => {
     switch (status) {
@@ -21,9 +30,19 @@ export default function OrderManager() {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-800">Order Management Core</h1>
-        <p className="text-sm text-slate-500">Track and alter transaction workflows in real-time across the client state stack.</p>
+      <div className="page-heading">
+        <div>
+          <p className="eyebrow">Operations</p>
+          <h1 className="text-2xl font-bold text-slate-800">Orders</h1>
+          <p className="text-sm text-slate-500">Search orders and keep fulfillment status up to date.</p>
+        </div>
+        <button type="button" className="secondary-action" onClick={() => downloadCsv('shopmetrics-orders.csv', [['Order ID', 'Customer', 'Email', 'Items', 'Quantity', 'Status', 'Total', 'Date'], ...filteredOrders.map(order => [order.id, order.customerName, order.customerEmail, order.productName, order.quantity, order.status, order.totalAmount, order.date])])} disabled={!filteredOrders.length}>Export {filteredOrders.length} orders</button>
+      </div>
+
+      <div className="list-toolbar">
+        <label className="list-search"><span>Search orders</span><input type="search" value={search} onChange={event => { setSearch(event.target.value); setPage(1); }} placeholder="Order number, customer, or item" /></label>
+        <label className="list-filter"><span>Status</span><select value={statusFilter} onChange={event => { setStatusFilter(event.target.value); setPage(1); }}><option>All</option><option>Processing</option><option>Shipped</option><option>Delivered</option><option>Cancelled</option></select></label>
+        <span className="list-result-count">{filteredOrders.length} {filteredOrders.length === 1 ? 'order' : 'orders'}</span>
       </div>
 
       <div className="responsive-data-table order-table-shell bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
@@ -67,10 +86,11 @@ export default function OrderManager() {
                 </td>
               </tr>
             ))}
+            {visibleOrders.length === 0 && <tr><td colSpan="6" className="list-empty">No orders match these filters.</td></tr>}
           </tbody>
         </table>
       </div>
-      <Pagination page={page} pageCount={pageCount} totalItems={orders.length} pageSize={pageSize} onPageChange={setPage} />
+      <Pagination page={currentPage} pageCount={pageCount} totalItems={filteredOrders.length} pageSize={pageSize} onPageChange={setPage} />
     </div>
   );
 }
