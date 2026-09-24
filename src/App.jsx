@@ -10,7 +10,6 @@ import ProfilePage from './components/ProfilePage';
 
 function App() {
   const { activeTab, setActiveTab, user, handleLogout, deleteAccount, updateProfile, theme, toggleTheme } = useStore();
-``
   if (!user) {
     return <AuthPage />;
   }
