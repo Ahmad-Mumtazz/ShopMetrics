@@ -245,7 +245,7 @@ export function StoreProvider({ children }) {
     if (savedUsers.some(u => u.email === email)) {
       return { success: false, error: 'Email descriptor already registered.' };
     }
-    const updatedUsers = [...savedUsers, { name, email, password }];
+    const updatedUsers = [...savedUsers, { name, email, password, createdAt: new Date().toISOString() }];
     localStorage.setItem('sm_registered_users', JSON.stringify(updatedUsers));
     
     const newUser = { name, email, role: 'merchant' };
@@ -392,4 +392,3 @@ export function StoreProvider({ children }) {
 export function useStore() {
   return useContext(StoreContext);
 }
-

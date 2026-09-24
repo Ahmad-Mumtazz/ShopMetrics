@@ -9,6 +9,7 @@ import { catalogCategories } from '../data/catalog';
 import Pagination from './Pagination';
 import ProductDetail from './customer/ProductDetail';
 import ProfilePage from './ProfilePage';
+import CustomerFooter from './customer/CustomerFooter';
 
 const categories = ['All', ...catalogCategories];
 
@@ -111,6 +112,7 @@ export default function CustomerStore() {
           </div>
         ) : activeView === 'Cart' ? <CartPage cart={cart} cartTotal={cartTotal} checkoutMessage={checkoutMessage} updateQuantity={updateQuantity} checkout={checkout} setActiveView={setActiveView} /> : activeView === 'Profile' ? <ProfilePage user={user} updateProfile={updateProfile} setActiveTab={setActiveView} /> : <OrderHistory orders={customerOrders} />}
       </main>
+      <CustomerFooter user={user} products={products} setActiveView={setActiveView} />
       {selectedProduct && <ProductDetail product={products.find(product => product.id === selectedProduct.id) || selectedProduct} onClose={() => setSelectedProduct(null)} addToCart={addToCart} addReview={addProductReview} user={user} />}
     </div>
   );

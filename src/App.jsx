@@ -7,6 +7,7 @@ import OrderManager from './components/OrderManager';
 import CustomerStore from './components/CustomerStore';
 import AccountMenu from './components/AccountMenu';
 import ProfilePage from './components/ProfilePage';
+import BrandLogo from './components/BrandLogo';
 
 function App() {
   const { activeTab, setActiveTab, user, handleLogout, deleteAccount, updateProfile, theme, toggleTheme } = useStore();
@@ -39,7 +40,7 @@ function App() {
       {/* Structural Desktop Sidebar Panel */}
       <aside className="merchant-sidebar w-64 flex flex-col fixed h-full z-20">
         <div className="merchant-brand h-16 px-6 flex items-center gap-3">
-          <span className="brand-mark">SM</span>
+          <BrandLogo size={36} />
           <span className="font-bold text-lg text-white tracking-wider">ShopMetrics</span>
         </div>
         <nav className="flex-1 px-4 py-6 space-y-1.5">

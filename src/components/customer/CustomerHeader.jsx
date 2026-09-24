@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AccountMenu from '../AccountMenu';
+import BrandLogo from '../BrandLogo';
 
 export default function CustomerHeader({ user, setActiveView, handleLogout, deleteAccount, cartCount, theme, toggleTheme }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -9,10 +10,10 @@ export default function CustomerHeader({ user, setActiveView, handleLogout, dele
   };
 
   return (
-    <header className="customer-header">
+    <header id="top" className="customer-header">
       <div className="customer-header__inner">
         <div className="brand-lockup">
-          <span className="brand-mark">SM</span>
+          <BrandLogo size={38} />
           <div>
             <p className="eyebrow">ShopMetrics / Market</p>
             <h1>Consumer command deck</h1>
@@ -28,6 +29,4 @@ export default function CustomerHeader({ user, setActiveView, handleLogout, dele
           <button type="button" onClick={toggleTheme} className="hud-button bulb-button" aria-label="Toggle theme" title="Toggle theme">{theme === 'dark' ? '☀' : '☾'}</button>
         </nav>
       </div>
-    </header>
-  );
-}
+   
