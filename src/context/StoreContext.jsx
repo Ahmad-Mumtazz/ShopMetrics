@@ -59,6 +59,7 @@ const generateInitialMockData = () => {
 };
 
 const getMerchantStorageKey = (type, email) => `sm_${type}_${email}`;
+const getMerchantOwnerKey = (email) => `sm_merchant_owner_${email}`;
 
 const getDataOwnerEmail = (account) => account?.role === 'customer' ? account.merchantEmail : account?.email;
 
@@ -127,6 +128,12 @@ export function StoreProvider({ children }) {
   const [theme, setTheme] = useState(() => localStorage.getItem('sm_theme') || 'dark');
   const dataOwnerEmail = getDataOwnerEmail(user);
 
+  useEffect(() => {
+    if (user?.role === 'merchant' && user.email && user.name) {
+      localStorage.setItem(getMerchantOwnerKey(user.email), user.name);
+    }
+  }, [user?.email, user?.name, user?.role]);
+
   const toggleTheme = () => {
     setTheme(previousTheme => {
       const nextTheme = previousTheme === 'dark' ? 'light' : 'dark';
@@ -193,6 +200,9 @@ export function StoreProvider({ children }) {
 
   // Authentication Handlers
   const activateUser = (account) => {
+    if (account.role === 'merchant') {
+      localStorage.setItem(getMerchantOwnerKey(account.email), account.name);
+    }
     const merchantData = loadMerchantData(getDataOwnerEmail(account));
     setProducts(merchantData.products);
     setOrders(merchantData.orders);
@@ -315,6 +325,8 @@ export function StoreProvider({ children }) {
     setUser(updatedUser);
     localStorage.setItem('sm_current_user', JSON.stringify(updatedUser));
     if (user.role === 'merchant') {
+      localStorage.setItem(getMerchantOwnerKey(user.email), name);
+      localStorage.setItem(getMerchantOwnerKey(email), name);
       const users = JSON.parse(localStorage.getItem('sm_registered_users') || '[]');
       localStorage.setItem('sm_registered_users', JSON.stringify(users.map(account => account.email === user.email ? { ...account, name, email } : account)));
     } else {

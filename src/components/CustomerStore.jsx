@@ -81,7 +81,7 @@ export default function CustomerStore() {
   };
 
   return (
-    <div data-theme={theme} className="customer-app grid-background">
+    <div id="top" data-theme={theme} className="customer-app grid-background">
       <CustomerHeader user={user} setActiveView={setActiveView} handleLogout={handleLogout} deleteAccount={deleteAccount} cartCount={cart.length} theme={theme} toggleTheme={toggleTheme} />
       <main className="customer-main">
         <section className="customer-hero">
