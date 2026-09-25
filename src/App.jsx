@@ -37,7 +37,6 @@ function App() {
   return (
     <div data-theme={theme} className="futuristic-shell min-h-screen h-screen flex overflow-hidden antialiased">
       
-      {/* Structural Desktop Sidebar Panel */}
       <aside className="merchant-sidebar w-64 flex flex-col fixed h-full z-20">
         <div className="merchant-brand h-16 px-6 flex items-center gap-3">
           <BrandLogo size={36} />
