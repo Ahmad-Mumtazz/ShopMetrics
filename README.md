@@ -1,16 +1,20 @@
-# React + Vite
+# ShopMetrics
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ShopMetrics is a React storefront and merchant workspace demo. Customers can browse products, save favorites, compare products, use merchant promotions, manage delivery addresses, place orders, and contact the store. Merchants can manage inventory, fulfillment, promotions, returns, support, product descriptions, and reviews.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Requirements: Node.js 20.19+ or 22.12+.
 
-## React Compiler
+```sh
+npm install
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Open the local URL printed by Vite. Use `npm run lint` to check source files, `npm run build` to create the production bundle, and `npm run preview` to serve that bundle locally.
 
-## Expanding the ESLint configuration
+## Data and hosting
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+This demo saves account, catalog, cart, and order data in the browser's local storage. Data is local to that browser profile; it does not sync across devices or provide production authentication, payment processing, or parcel tracking integrations. Most seeded product photos use the catalog in `src/data/photoCatalog.json`; images load from external URLs and need an internet connection.
+
+Customer views use clean paths such as `/shop`, `/deals`, and `/orders`. A production static host must serve `index.html` as a fallback for these paths so direct visits and browser refreshes work.

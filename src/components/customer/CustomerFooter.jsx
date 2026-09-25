@@ -38,33 +38,42 @@ export default function CustomerFooter({ user, products, setActiveView }) {
     }
   })();
 
-  const storeName = merchant?.shopName?.trim() || 'ShopMetrics Market';
+  const storeName = merchant?.profile?.shopName?.trim() || merchant?.shopName?.trim() || 'ShopMetrics Market';
   const sinceYear = merchant?.createdAt ? new Date(merchant.createdAt).getFullYear() : null;
   const contactHref = merchantEmail ? `mailto:${merchantEmail}?subject=${encodeURIComponent(`Question for ${storeName}`)}` : null;
   const categoryCount = new Set(products.map(product => product.category)).size;
+  const availableCount = products.filter(product => Number(product.stock) > 0).length;
+  const soldOutCount = Math.max(0, products.length - availableCount);
 
   return (
     <footer className="store-footer" id="store-footer">
       <div className="store-footer__inner">
         <section className="store-footer__brand">
-          <a className="store-footer__lockup" href="#top" aria-label={`${storeName}, back to top`}>
+          <button type="button" className="store-footer__lockup" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label={`${storeName}, back to top`}>
             <BrandLogo size={40} />
             <span><strong>{storeName}</strong><small>Browse the collection and manage your orders.</small></span>
-          </a>
-          <p>{products.length} products across {categoryCount} {categoryCount === 1 ? 'category' : 'categories'}.</p>
+          </button>
+          <p>A quick guide to the shop, your orders, and store contact details.</p>
+          <div className="store-footer__stats" aria-label="Store catalogue summary">
+            <span><strong>{products.length}</strong> products</span>
+            <span><strong>{categoryCount}</strong> categories</span>
+            <span><strong>{availableCount}</strong> available</span>
+            {soldOutCount > 0 && <span><strong>{soldOutCount}</strong> sold out</span>}
+          </div>
         </section>
 
         <nav className="store-footer__links" aria-label="Footer navigation">
-          <h2>Explore</h2>
-          <button type="button" onClick={() => setActiveView('Shop')}>Shop products</button>
-          <button type="button" onClick={() => setActiveView('Orders')}>Order history</button>
-          <button type="button" onClick={() => setActiveView('Cart')}>Your cart</button>
+          <h2>Your account</h2>
+          <button type="button" onClick={() => setActiveView('Shop')}>Browse all products</button>
+          <button type="button" onClick={() => setActiveView('Orders')}>Track and review orders</button>
+          <button type="button" onClick={() => setActiveView('Cart')}>View your cart</button>
           <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Back to top</button>
         </nav>
 
         <section className="store-footer__contact">
           <h2>Store information</h2>
           <p>Managed by <strong>{ownerName}</strong></p>
+          <p>{storeName}</p>
           {sinceYear && <p>Store member since {sinceYear}</p>}
           {contactHref ? <a href={contactHref}>{merchantEmail} <span aria-hidden="true">↗</span></a> : <p>Contact details are not available.</p>}
           <small>Secure checkout · Order updates in your account</small>

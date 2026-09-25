@@ -1,7 +1,8 @@
 export function downloadCsv(filename, rows) {
   if (!rows.length) return;
   const escapeCell = (value) => {
-    const text = String(value ?? '');
+    const rawText = String(value ?? '');
+    const text = typeof value === 'string' && /^[\t\r=+\-@]/.test(rawText) ? `'${rawText}` : rawText;
     return `"${text.replaceAll('"', '""')}"`;
   };
   const csv = rows.map(row => row.map(escapeCell).join(',')).join('\r\n');

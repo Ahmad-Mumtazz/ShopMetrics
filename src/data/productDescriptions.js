@@ -1,0 +1,29 @@
+const categoryCopy = {
+  Electronics: 'Designed to make everyday tasks feel more convenient, electronics in this collection balance useful functionality with a clean, considered look. The product fits naturally into a modern routine, whether it is used at home, at work, or while travelling. Its approachable design keeps the experience straightforward, while the versatile format makes it easy to pair with the devices and accessories you already use.',
+  Footwear: 'This footwear is selected with daily comfort, practical wear, and versatile styling in mind. Its considered profile makes it suitable for moving through a busy day, while the adaptable look works with a range of casual outfits and activities. Choose a fit that feels right for you and follow the care guidance appropriate to the materials to keep it looking its best.',
+  Furniture: 'Created to bring useful function and a composed look to your space, this furniture piece works well in a home, study, or working environment. Its practical form helps make better use of the room while keeping everyday routines comfortable and organized. Consider the available floor space and your intended use before ordering so the piece fits naturally into your layout.',
+  Accessories: 'A considered accessory can make everyday routines feel more organized and personal. This piece is selected for its useful design and easy versatility, making it a natural companion for daily plans, travel, or gifting. Its understated character helps it work with different styles and existing essentials without adding unnecessary complexity.',
+  'Home & Kitchen': 'Thoughtfully chosen for the heart of the home, this item supports practical everyday routines while adding a polished touch to your kitchen or living space. Its versatile design makes it useful for regular use as well as special occasions, and it fits easily alongside familiar household essentials. Review the product image and care guidance to make sure it suits your needs.',
+  Beauty: 'This beauty and personal-care selection is designed to make a regular self-care routine feel more considered and enjoyable. Its approachable format makes it easy to include in your daily or occasional care ritual, whether you are refreshing your own collection or choosing a thoughtful gift. Check the product packaging for ingredient, usage, and suitability information before use.',
+  Sports: 'Made for an active routine, this sports selection supports practice, training, and recreational movement. Its practical design helps keep attention on the activity, while its versatile use makes it suitable for building into a regular fitness or leisure schedule. Choose equipment that matches your activity and experience, and follow appropriate use and care instructions.',
+  Books: 'A good book offers room to learn, reflect, and return to an idea at your own pace. This title is a considered addition to a personal library or reading list, with a format suited to focused reading and sharing with others. It can be enjoyed during a quiet moment, used as a reference, or given as a thoughtful gift to a curious reader.',
+  Toys: 'Designed to invite curiosity and imaginative play, this toy gives children an engaging way to explore, create, and enjoy time away from screens. Its versatile play value encourages repeated use and makes it a thoughtful choice for birthdays, celebrations, or everyday surprises. Please review the age guidance and safety information on the product packaging before use.',
+  Garden: 'Bring a little more care and character to an outdoor or indoor growing space with this garden selection. Its practical design supports common planting and maintenance routines, whether you are tending a balcony, patio, or larger garden. Consider your available space, local conditions, and the needs of your plants when choosing the right setup.',
+  Travel: 'Prepared for life on the move, this travel selection helps keep journeys and daily transitions more organized. Its versatile design is suited to regular trips, short getaways, and the practical details of travel planning. Check the listed product dimensions and your transport requirements before ordering so it works comfortably with your travel routine.',
+  'Pet Supplies': 'Thoughtfully selected for the comfort and care of a much-loved companion, this pet product supports useful everyday routines at home and beyond. Its practical design helps make regular care simpler while fitting naturally into your pet’s familiar environment. Choose a size and use that suit your animal, and follow the care and safety guidance provided with the product.'
+};
+
+export function createProductDescription(product) {
+  const name = product.name?.trim() || 'This product';
+  const category = product.category || 'everyday essentials';
+  const categoryDetails = categoryCopy[category] || 'Selected for its practical design and dependable everyday usefulness, this versatile item fits easily into familiar routines. Its considered style makes it a suitable choice for personal use or gifting, while its straightforward format keeps the experience simple.';
+
+  return `${name} is a carefully selected ${category.toLowerCase()} product for customers who value practical function, thoughtful design, and an easy fit with everyday life. Its versatile character makes it suitable for regular use, while its considered presentation also makes it a welcome choice when you are looking for a useful gift.\n\n${categoryDetails}\n\nReview the product images and current stock before ordering. Select the quantity that suits your needs, then provide your delivery details at checkout. Product availability is confirmed when the order is placed.`;
+}
+
+export function ensureProductDescriptions(products) {
+  return products.map(product => ({
+    ...product,
+    description: product.descriptionDeleted ? '' : product.description?.trim() || createProductDescription(product)
+  }));
+}
