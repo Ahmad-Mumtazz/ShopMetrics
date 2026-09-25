@@ -1,7 +1,7 @@
 import { useStore } from '../context/StoreContext';
 import RevenueChart from './RevenueChart';
 
-export default function AnalyticsView() {
+export default function AnalyticsView({ onShowLowStock }) {
   const { financialMetrics, orders, setActiveTab } = useStore();
 
   return (
@@ -29,7 +29,7 @@ export default function AnalyticsView() {
           <div className="mt-2 text-2xl font-bold text-slate-800">${financialMetrics.averageOrderValue}</div>
           <div className="mt-1 text-xs text-slate-500 font-medium">Based on current order volume</div>
         </div>
-        <button type="button" onClick={() => setActiveTab('Products')} className="holo-card metric-card w-full text-left bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden hover:border-indigo-300 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-indigo-200">
+        <button type="button" onClick={() => { onShowLowStock?.(); setActiveTab('Products'); }} className="holo-card metric-card w-full text-left bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden hover:border-indigo-300 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-indigo-200">
           <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Low Stock Warnings</div>
           <div className="mt-2 text-2xl font-bold text-slate-800">{financialMetrics.lowStockCount} Items</div>
           <div className={`mt-1 text-xs font-semibold ${financialMetrics.lowStockCount > 0 ? 'text-amber-600' : 'text-slate-500'}`}>

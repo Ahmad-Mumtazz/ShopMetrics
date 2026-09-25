@@ -136,7 +136,7 @@ button, input, select { font: inherit; }
 [data-theme="light"] .inventory-table-shell thead, [data-theme="light"] .order-table-shell thead { background: #eef4f6; }.inventory-table-shell tbody, .order-table-shell tbody { color: #334d5a; }.inventory-table-shell td, .order-table-shell td { border-color: #e1eaee; }
 [data-theme="light"] .inventory-table-shell .text-slate-800, [data-theme="light"] .order-table-shell .text-slate-800 { color: #173142; } [data-theme="light"] .inventory-table-shell .text-slate-500, [data-theme="light"] .order-table-shell .text-slate-500, [data-theme="light"] .inventory-table-shell .text-slate-400, [data-theme="light"] .order-table-shell .text-slate-400 { color: #52707d; } [data-theme="light"] .inventory-table-shell .bg-slate-100, [data-theme="light"] .order-table-shell .bg-slate-50 { background: #f0f5f7; color: #334d5a; }
 
-.inventory-category-toggle { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.8rem; overflow-x: auto; }.inventory-category-toggle button { border: 1px solid rgba(104, 188, 204, 0.2); border-radius: 999px; background: transparent; color: #8faab2; cursor: pointer; font-size: 0.66rem; font-weight: 800; padding: 0.45rem 0.7rem; white-space: nowrap; }.inventory-category-toggle button.is-active { border-color: #63d7d4; background: rgba(17, 67, 76, 0.62); color: #dffffb; }
+.inventory-category-toggle { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.35rem; margin-top: 0.8rem; }.inventory-category-toggle button { width: 100%; min-width: 0; border: 1px solid rgba(104, 188, 204, 0.2); border-radius: 999px; background: transparent; color: #8faab2; cursor: pointer; font-size: 0.66rem; font-weight: 800; padding: 0.45rem 0.7rem; white-space: nowrap; }.inventory-category-toggle button.is-active { border-color: #63d7d4; background: rgba(17, 67, 76, 0.62); color: #dffffb; }
 [data-theme="light"] .inventory-category-toggle button { border-color: #c7d8df; color: #52707d; } [data-theme="light"] .inventory-category-toggle button.is-active { border-color: #359997; background: #d7f0ed; color: #14515c; }
 
 @media (max-width: 760px) {
@@ -240,6 +240,8 @@ button, a, input, select, textarea { touch-action: manipulation; }
 .merchant-header .account-menu__button { max-width: min(60vw, 320px); }
 .inventory-table-shell, .order-table-shell { max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
 .inventory-table-shell table, .order-table-shell table { min-width: 680px; }
+.inventory-table-shell .inventory-edit-button { display: inline-flex; flex: 0 0 auto; white-space: nowrap; }
+.inventory-category-badge { display: inline-flex; width: 8.5rem; min-height: 2rem; align-items: center; justify-content: center; text-align: center; white-space: normal; overflow-wrap: anywhere; line-height: 1.2; }
 .metric-card, .product-card, .profile-page, .cart-page, .order-history, .revenue-panel { min-width: 0; }
 .customer-menu-toggle { display: none; }
 .customer-menu-toggle__icon { width: 16px; height: 12px; background: linear-gradient(to bottom, currentColor 0 2px, transparent 2px 5px, currentColor 5px 7px, transparent 7px 10px, currentColor 10px 12px); }

@@ -4,7 +4,7 @@ import { catalogCategories, categoryImages } from '../data/catalog';
 import Pagination from './Pagination';
 import { downloadCsv } from '../utils/csv';
 
-export default function ProductInventory() {
+export default function ProductInventory({ lowStockOnly = false, onClearLowStockFilter }) {
 
   const { products, addProduct, updateProduct } = useStore();
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,13 +24,14 @@ export default function ProductInventory() {
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       return (
+        (!lowStockOnly || product.stock < 15) &&
         (product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
           product.id.toLowerCase().includes(searchTerm.toLowerCase())) &&
           (categoryFilter === 'All' || product.category === categoryFilter)
       );
     });
-  }, [products, searchTerm, categoryFilter]);
+  }, [products, searchTerm, categoryFilter, lowStockOnly]);
   const pageSize = 10;
   const pageCount = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
   const visibleProducts = filteredProducts.slice((page - 1) * pageSize, page * pageSize);
@@ -113,8 +114,10 @@ export default function ProductInventory() {
           <p className="eyebrow">Catalog</p>
           <h1 className="text-2xl font-bold text-slate-800">Inventory</h1>
           <p className="text-sm text-slate-500">Manage product details, pricing, and stock levels.</p>
+          {lowStockOnly && <p className="mt-2 text-sm font-semibold text-amber-600">Showing low stock items (under 15 units).</p>}
         </div>
         <div className="page-heading__actions">
+          {lowStockOnly && <button type="button" className="secondary-action" onClick={onClearLowStockFilter}>Show all products</button>}
           <button type="button" className="secondary-action" onClick={() => downloadCsv('shopmetrics-inventory.csv', [['Product ID', 'Name', 'Category', 'Price', 'Stock', 'Sales', 'Reviews'], ...filteredProducts.map(product => [product.id, product.name, product.category, product.price, product.stock, product.salesCount, product.reviews?.length || 0])])} disabled={!filteredProducts.length}>Export {filteredProducts.length} products</button>
           <button type="button" onClick={openCreateModal} className="primary-action">+ Add product</button>
         </div>
@@ -135,7 +138,7 @@ export default function ProductInventory() {
       </div>
 
       {/* Main Data Directory Layout Table */}
-      <div className="inventory-table-shell responsive-data-table bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="inventory-table-shell bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200">
@@ -159,7 +162,7 @@ export default function ProductInventory() {
                 <td data-label="ID reference" className="px-6 py-4 font-mono font-bold text-indigo-600 text-xs">{product.id}</td>
                 <td data-label="Product" className="px-6 py-4 font-semibold text-slate-800">{product.name}</td>
                 <td data-label="Category" className="px-6 py-4">
-                  <span className="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-md font-medium border border-slate-200">{product.category}</span>
+                  <span className="inventory-category-badge bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-md font-medium border border-slate-200">{product.category}</span>
                 </td>
                 <td data-label="Unit price" className="px-6 py-4 text-right font-medium text-slate-800">${product.price}</td>
                 <td data-label="Stock" className="px-6 py-4 text-right font-medium">
@@ -173,7 +176,7 @@ export default function ProductInventory() {
                   <button 
                     type="button"
                     onClick={() => openEditModal(product)}
-                    className="text-xs bg-slate-100 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 text-slate-600 hover:text-indigo-600 font-bold py-1 px-3 rounded-md transition-all shadow-sm"
+                    className="inventory-edit-button text-xs bg-slate-100 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 text-slate-600 hover:text-indigo-600 font-bold py-1 px-3 rounded-md transition-all shadow-sm"
                   >
                     Edit
                   </button>
