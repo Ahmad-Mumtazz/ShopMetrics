@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useStore } from './context/StoreContext';
 import AuthPage from './components/AuthPage';
 import AnalyticsView from './components/AnalyticsView';
@@ -10,6 +10,7 @@ import ProfilePage from './components/ProfilePage';
 import BrandLogo from './components/BrandLogo';
 
 function App() {
+  const [showLowStockOnly, setShowLowStockOnly] = useState(false);
   const { activeTab, setActiveTab, user, handleLogout, deleteAccount, updateProfile, theme, toggleTheme } = useStore();
   if (!user) {
     return <AuthPage />;
@@ -21,8 +22,8 @@ function App() {
 
   const renderActiveView = () => {
     switch (activeTab) {
-      case 'Dashboard': return <AnalyticsView />;
-      case 'Products': return <ProductInventory />;
+      case 'Dashboard': return <AnalyticsView onShowLowStock={() => setShowLowStockOnly(true)} />;
+      case 'Products': return <ProductInventory lowStockOnly={showLowStockOnly} onClearLowStockFilter={() => setShowLowStockOnly(false)} />;
       case 'Orders': return <OrderManager />;
       case 'Profile': return <ProfilePage user={user} updateProfile={updateProfile} setActiveTab={setActiveTab} />;
       default: return <AnalyticsView />;
@@ -48,13 +49,12 @@ function App() {
             return (
               <button
                 key={item.name}
-                onClick={() => setActiveTab(item.name)}
+                onClick={() => { if (item.name === 'Products') setShowLowStockOnly(false); setActiveTab(item.name); }}
                 className={`merchant-nav-button w-full flex items-center gap-3.5 px-4 py-3 text-sm font-semibold rounded-lg transition-all duration-150 ${
                   isActive 
                     ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/10' 
                     : 'hover:bg-slate-800/60 hover:text-slate-100 text-slate-400'
-                }`}
-              >
+                }`}>
                 <span className="text-base">{item.icon}</span>
                 {item.name}
               </button>
@@ -62,12 +62,10 @@ function App() {
           })}
         </nav>
         
-        {/* Interactive Logout Interface Control Widget */}
         <div className="merchant-logout p-4 space-y-3">
           <button 
             onClick={handleLogout}
-            className="w-full bg-slate-950 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-900 text-xs py-2 px-3 rounded-lg font-medium transition-all text-left flex items-center justify-between"
-          >
+            className="w-full bg-slate-950 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-900 text-xs py-2 px-3 rounded-lg font-medium transition-all text-left flex items-center justify-between">
             <span>Exit Merchant Portal</span>
             <span>🚪</span>
           </button>
